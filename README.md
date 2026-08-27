@@ -13,6 +13,14 @@ inicial, aporte mensual y horizonte, y compara tres perfiles de riesgo
 (conservador 6%, moderado 9%, agresivo 13% anual) en una gráfica de proyección con
 capitalización mensual. Ábrelo directamente en el navegador.
 
+## Estrategia táctica: screener RSI diario
+
+`rsi_screener.py` complementa el portafolio pasivo con una estrategia activa de
+reversión a la media basada en RSI(14) diario: cada día clasifica un universo de
+activos por señal (compra/vigilar/esperar/venta) y los ranquea según el
+desempeño histórico backtesteado de esa misma regla. Reglas completas,
+gestión de riesgo y limitaciones en [`RSI_STRATEGY.md`](RSI_STRATEGY.md).
+
 ## Diagnóstico: ¿es realista $1,000,000 en 5 años?
 
 No, con este capital y aporte. En 5 años se habrán aportado $10,000 + $500 × 60 =
