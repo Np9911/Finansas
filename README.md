@@ -21,6 +21,16 @@ activos por señal (compra/vigilar/esperar/venta) y los ranquea según el
 desempeño histórico backtesteado de esa misma regla. Reglas completas,
 gestión de riesgo y limitaciones en [`RSI_STRATEGY.md`](RSI_STRATEGY.md).
 
+## Deuda: pagar una hipoteca de $100,000 en 5 años
+
+`mortgage_payoff.py` calcula el pago mensual requerido para liquidar un
+préstamo en un plazo objetivo, compara escenarios (quincenal, extra fijo,
+refinanciar) y exporta la tabla de amortización. A diferencia de la meta de
+$1,000,000, esta sí es alcanzable con matemática de préstamo estándar — el
+diagnóstico completo, las cinco estrategias y la pregunta de costo de
+oportunidad (pagar extra vs. invertir) están en
+[`MORTGAGE_STRATEGY.md`](MORTGAGE_STRATEGY.md).
+
 ## Diagnóstico: ¿es realista $1,000,000 en 5 años?
 
 No, con este capital y aporte. En 5 años se habrán aportado $10,000 + $500 × 60 =
