@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cero Deuda en 5 · Finansas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,680&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --bg-page:      #f1f0ea;
+    --bg-surface:   #ffffff;
+    --bg-raised:    #fbfaf6;
+    --ink:          #1b231f;
+    --ink-secondary:#55605a;
+    --ink-muted:    #8b9590;
+    --accent:       #1f6f54;
+    --accent-ink:   #ffffff;
+    --accent-soft:  #e3eee7;
+    --warn:         #ad5330;
+    --warn-soft:    #f3e1d6;
+    --line:         #dedbd0;
+    --line-strong:  #c7c3b5;
+
+    --chart-surface: #fcfcfb;
+    --chart-grid:    #e1e0d9;
+    --chart-axis:    #c3c2b7;
+    --chart-muted:   #898781;
+    --series-1:      #2a78d6; /* plan estándar */
+    --series-2:      #eb6834; /* plan acelerado */
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg-page:      #10140f;
+      --bg-surface:   #171e1a;
+      --bg-raised:    #1c2420;
+      --ink:          #ecebe3;
+      --ink-secondary:#aeb6ac;
+      --ink-muted:    #7c857e;
+      --accent:       #4fbe93;
+      --accent-ink:   #0b1712;
+      --accent-soft:  #16332a;
+      --warn:         #e08a5b;
+      --warn-soft:    #2e2119;
+      --line:         #2a332d;
+      --line-strong:  #3a453d;
+
+      --chart-surface: #1a1a19;
+      --chart-grid:    #2c2c2a;
+      --chart-axis:    #383835;
+      --chart-muted:   #898781;
+      --series-1:      #3987e5;
+      --series-2:      #d95926;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg-page:      #10140f;
+    --bg-surface:   #171e1a;
+    --bg-raised:    #1c2420;
+    --ink:          #ecebe3;
+    --ink-secondary:#aeb6ac;
+    --ink-muted:    #7c857e;
+    --accent:       #4fbe93;
+    --accent-ink:   #0b1712;
+    --accent-soft:  #16332a;
+    --warn:         #e08a5b;
+    --warn-soft:    #2e2119;
+    --line:         #2a332d;
+    --line-strong:  #3a453d;
+
+    --chart-surface: #1a1a19;
+    --chart-grid:    #2c2c2a;
+    --chart-axis:    #383835;
+    --chart-muted:   #898781;
+    --series-1:      #3987e5;
+    --series-2:      #d95926;
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--bg-page);
+    color: var(--ink);
+    font-family: "Public Sans", -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--accent-soft); color: var(--ink); }
+  *:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  a{ color: var(--accent); }
+  .wrap{ max-width: 920px; margin: 0 auto; padding: 4.5rem 1.5rem 6rem; }
+  .wide{ max-width: 1080px; margin: 0 auto; padding: 0 1.5rem; }
+
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.78rem; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--accent); display:flex; align-items:center; gap:0.6rem; margin-bottom: 1.1rem;
+  }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--accent); }
+
+  h1{
+    font-family:"Fraunces",Georgia,serif; font-optical-sizing:auto; font-weight:600;
+    font-size: clamp(2.1rem, 4.4vw, 3.05rem); line-height:1.08; letter-spacing:-0.01em;
+    margin:0 0 1.1rem; text-wrap: balance;
+  }
+  h2{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size: clamp(1.4rem, 2.4vw, 1.7rem); line-height:1.2; margin:0 0 0.9rem; text-wrap:balance; }
+  h3{ font-family:"Public Sans",sans-serif; font-weight:700; font-size:1rem; margin:0 0 0.5rem; }
+  p{ margin:0 0 1rem; max-width:65ch; color: var(--ink-secondary); }
+  .lede{ font-size:1.13rem; color: var(--ink-secondary); max-width:62ch; }
+  .tag{ font-family:"IBM Plex Mono",monospace; font-size:0.78rem; color: var(--ink-muted); }
+
+  section{ margin-top: 4.2rem; }
+  section:first-of-type{ margin-top:0; }
+
+  .briefing{
+    background: var(--accent-soft);
+    border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+    border-radius: 14px; padding: 1.8rem 2rem;
+  }
+  .briefing h2{ color: var(--ink); }
+  .briefing p{ max-width:68ch; }
+  .briefing strong{ color: var(--ink); }
+
+  .stat-row{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap:1px; background: var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden;
+    margin: 1.6rem 0 1.4rem;
+  }
+  .stat{ background: var(--bg-surface); padding: 1.15rem 1.3rem; }
+  .stat .tag{ margin-bottom:0.35rem; }
+  .stat .value{ font-family:"IBM Plex Mono",monospace; font-variant-numeric: tabular-nums; font-size:1.5rem; font-weight:600; color: var(--ink); }
+  .stat .value.accent{ color: var(--accent); }
+  .stat .sub{ font-size:0.82rem; color: var(--ink-muted); margin-top:0.2rem; }
+
+  .panel{ background: var(--bg-surface); border:1px solid var(--line); border-radius:16px; padding:2rem; }
+  @media (max-width:640px){ .panel{ padding:1.3rem; } }
+
+  .controls{ display:grid; grid-template-columns: repeat(4,1fr); gap:1.4rem; margin-bottom:1.6rem; }
+  @media (max-width:860px){ .controls{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width:480px){ .controls{ grid-template-columns: 1fr; } }
+
+  .field label{ display:block; font-size:0.78rem; font-weight:600; letter-spacing:0.02em; color: var(--ink-secondary); margin-bottom:0.5rem; }
+  .field .input-money{ display:flex; align-items:center; background: var(--bg-raised); border:1px solid var(--line-strong); border-radius:9px; padding:0 0.2rem 0 0.85rem; }
+  .field .input-money span{ font-family:"IBM Plex Mono",monospace; color: var(--ink-muted); font-size:0.95rem; }
+  .field input[type="number"]{ width:100%; border:0; background:transparent; padding:0.65rem 0.6rem 0.65rem 0.3rem; font-family:"IBM Plex Mono",monospace; font-variant-numeric: tabular-nums; font-size:1rem; color: var(--ink); }
+  .field input:focus{ outline:none; }
+  .field .input-money:focus-within{ outline:2px solid var(--accent); outline-offset:1px; }
+  .field .years-row{ display:flex; align-items:center; gap:0.9rem; background: var(--bg-raised); border:1px solid var(--line-strong); border-radius:9px; padding:0.55rem 0.9rem; }
+  .field input[type="range"]{ flex:1; accent-color: var(--accent); }
+  .field .years-val{ font-family:"IBM Plex Mono",monospace; font-variant-numeric: tabular-nums; font-size:1rem; color: var(--ink); min-width:4.2ch; text-align:right; }
+
+  .legend-row{ display:flex; flex-wrap:wrap; gap:1.4rem; margin:0.2rem 0 1rem; }
+  .legend-item{ display:flex; align-items:center; gap:0.5rem; font-size:0.86rem; color: var(--ink-secondary); }
+  .legend-item .swatch{ width:11px; height:11px; border-radius:3px; }
+
+  .chart-shell{ position:relative; background: var(--chart-surface); border:1px solid var(--line); border-radius:12px; padding:1.2rem 1.2rem 0.6rem; }
+  svg.chart{ display:block; width:100%; height:auto; overflow:visible; }
+  .gridline{ stroke: var(--chart-grid); stroke-width:1; }
+  .axis-label{ font-family:"IBM Plex Mono",monospace; font-size:11px; fill: var(--chart-muted); }
+  .series-path{ fill:none; stroke-width:2.25; stroke-linecap:round; stroke-linejoin:round; }
+  .crosshair-line{ stroke: var(--ink-muted); stroke-width:1; opacity:0; pointer-events:none; }
+  .hit-area{ fill:transparent; }
+
+  .tooltip{
+    position:absolute; pointer-events:none; background: var(--bg-surface); border:1px solid var(--line-strong);
+    border-radius:10px; padding:0.6rem 0.75rem; font-size:0.8rem; box-shadow:0 6px 18px rgba(0,0,0,0.12);
+    opacity:0; transform: translate(-50%,-110%); transition: opacity 0.08s ease; white-space:nowrap; z-index:5;
+  }
+  .tooltip .t-year{ font-family:"IBM Plex Mono",monospace; color: var(--ink-muted); font-size:0.72rem; margin-bottom:0.35rem; }
+  .tooltip .t-row{ display:flex; align-items:center; gap:0.45rem; font-family:"IBM Plex Mono",monospace; font-variant-numeric: tabular-nums; color: var(--ink); padding:0.08rem 0; }
+  .tooltip .t-row .sw{ width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+
+  .outputs{ display:grid; grid-template-columns: repeat(4,1fr); gap:1px; background: var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-top:1.3rem; }
+  @media (max-width:860px){ .outputs{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width:480px){ .outputs{ grid-template-columns: 1fr; } }
+  .output{ background: var(--bg-raised); padding:1.1rem 1.3rem; }
+  .output .tag{ margin-bottom:0.4rem; }
+  .output .val{ font-family:"IBM Plex Mono",monospace; font-variant-numeric: tabular-nums; font-size:1.3rem; font-weight:600; color: var(--ink); }
+  .output .val.accent{ color: var(--accent); }
+
+  .whatif{ margin-top:1.3rem; border:1px solid var(--line); border-radius:12px; padding:1.2rem 1.4rem; background: var(--bg-raised); }
+  .whatif h3{ margin-bottom:0.6rem; }
+  .whatif .slider-row{ display:flex; align-items:center; gap:1rem; margin-bottom:1rem; }
+  .whatif .slider-row input[type="range"]{ flex:1; accent-color: var(--accent); }
+  .whatif .slider-row .amt{ font-family:"IBM Plex Mono",monospace; font-weight:700; min-width:6ch; text-align:right; }
+  .whatif .result{ font-size:0.92rem; color: var(--ink-secondary); }
+  .whatif .result strong{ color: var(--ink); font-family:"IBM Plex Mono",monospace; }
+
+  .table-scroll{ overflow-x:auto; border:1px solid var(--line); border-radius:12px; }
+  table{ border-collapse:collapse; width:100%; min-width:560px; background: var(--bg-surface); }
+  th,td{ text-align:left; padding:0.85rem 1.1rem; border-bottom:1px solid var(--line); font-size:0.9rem; }
+  thead th{ font-family:"IBM Plex Mono",monospace; font-size:0.72rem; letter-spacing:0.04em; text-transform:uppercase; color: var(--ink-muted); font-weight:600; background: var(--bg-raised); }
+  tbody td:nth-child(n+2){ font-family:"IBM Plex Mono",monospace; font-variant-numeric: tabular-nums; }
+  tbody tr:last-child td{ border-bottom:0; }
+  tbody td:first-child{ color: var(--ink); font-weight:600; }
+
+  .strategy-list{ display:flex; flex-direction:column; gap:0; border-top:1px solid var(--line); }
+  .strategy{ display:grid; grid-template-columns: 2.4rem 1fr; gap:1rem; padding:1.3rem 0; border-bottom:1px solid var(--line); }
+  .strategy .num{ font-family:"Fraunces",serif; font-weight:500; font-size:1.4rem; color: var(--accent); }
+  .strategy h3{ margin-bottom:0.3rem; }
+  .strategy p{ margin:0; }
+
+  .callout{ border-radius:12px; padding:1.4rem 1.6rem; }
+  .callout.warn{ background: var(--warn-soft); border:1px solid color-mix(in oklab, var(--warn) 35%, transparent); }
+  .callout.warn h3{ color: var(--warn); }
+  .callout ul{ margin:0; padding-left:1.2rem; color: var(--ink-secondary); }
+  .callout li{ margin-bottom:0.5rem; }
+  .callout li:last-child{ margin-bottom:0; }
+
+  footer{ margin-top:5rem; padding-top:1.8rem; border-top:1px solid var(--line); }
+  footer p{ font-size:0.82rem; color: var(--ink-muted); max-width:72ch; }
+
+
+  /* ---------- Hub nav ---------- */
+  .hub-nav{ background: var(--bg-surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 40; }
+  .hub-nav-inner{ max-width: 1080px; margin: 0 auto; padding: 0.85rem 1.5rem; display:flex; align-items:center; justify-content:space-between; gap: 1rem; flex-wrap: wrap; }
+  .hub-brand{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size: 1.02rem; color: var(--ink); text-decoration:none; display:flex; align-items:center; gap:0.5rem; }
+  .hub-brand::before{ content:"\25C6"; color: var(--accent); font-size:0.75rem; }
+  .hub-links{ display:flex; gap: 0.3rem; flex-wrap: wrap; }
+  .hub-links a{ font-family:"IBM Plex Mono",monospace; font-size: 0.8rem; padding: 0.45rem 0.8rem; border-radius: 7px; color: var(--ink-secondary); text-decoration:none; }
+  .hub-links a:hover{ background: var(--bg-raised); color: var(--ink); }
+  .hub-links a.active{ background: var(--accent-soft); color: var(--accent); font-weight:600; }
+
+</style>
+</head>
+<body>
+<nav class="hub-nav"><div class="hub-nav-inner">
+  <a href="index.html" class="hub-brand">Finansas</a>
+  <div class="hub-links"><a href="index.html">Inicio</a><a href="portafolio.html">Portafolio</a><a href="rsi.html">RSI Diario</a><a href="hipoteca.html" class="active">Hipoteca</a></div>
+</div></nav>
+
+<div class="wrap">
+  <div class="eyebrow">Calculadora &middot; Estrategia de pago acelerado</div>
+  <h1>Cero deuda en 5 años</h1>
+  <p class="lede">
+    A diferencia de intentar hacer $1,000,000 en 5 años, pagar una hipoteca de
+    <strong id="lede-principal">$100,000</strong> en <strong id="lede-years">5</strong> años
+    sí es alcanzable — no necesitas rendimientos extraordinarios, solo un pago
+    mucho más alto que el mínimo, sostenido en el tiempo.
+  </p>
+
+  <section class="briefing" aria-labelledby="brief-h">
+    <h2 id="brief-h">El número de referencia</h2>
+    <p>
+      Con $100,000 al 6.5% anual y un plazo original de 30 años, tu pago
+      estándar es <strong>$632/mes</strong>. Para terminar en 5 años en vez de
+      30, el pago sube a <strong>$1,957/mes</strong> — un extra de
+      <strong>$1,325 al mes</strong>. A cambio, te ahorras
+      <strong>$110,148 en intereses</strong>. Ajusta la calculadora abajo con
+      los números reales de tu préstamo.
+    </p>
+  </section>
+</div>
+
+<div class="wide">
+  <div class="panel">
+    <div class="controls">
+      <div class="field">
+        <label for="in-principal">Saldo del préstamo</label>
+        <div class="input-money"><span>$</span><input type="number" id="in-principal" value="100000" min="1000" step="1000"></div>
+      </div>
+      <div class="field">
+        <label for="in-rate">Tasa de interés anual</label>
+        <div class="input-money"><input type="number" id="in-rate" value="6.5" min="0" max="20" step="0.05"><span>%</span></div>
+      </div>
+      <div class="field">
+        <label for="in-original">Plazo original</label>
+        <div class="years-row"><input type="range" id="in-original" min="5" max="30" value="30" step="1"><span class="years-val"><span id="original-val">30</span> a</span></div>
+      </div>
+      <div class="field">
+        <label for="in-target">Meta de pago</label>
+        <div class="years-row"><input type="range" id="in-target" min="1" max="20" value="5" step="1"><span class="years-val"><span id="target-val">5</span> a</span></div>
+      </div>
+    </div>
+
+    <div class="legend-row" id="legend-row"></div>
+
+    <div class="chart-shell">
+      <svg class="chart" id="chart" viewBox="0 0 1000 380" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Saldo restante del préstamo en el tiempo: plan estándar contra plan acelerado">
+        <g id="gridlines"></g>
+        <g id="series-group"></g>
+        <line class="crosshair-line" id="crosshair" x1="0" y1="0" x2="0" y2="340"></line>
+        <g id="hover-dots"></g>
+        <rect class="hit-area" id="hit-area" x="0" y="0" width="1000" height="380"></rect>
+      </svg>
+      <div class="tooltip" id="tooltip"><div class="t-year" id="t-year"></div><div id="t-rows"></div></div>
+    </div>
+
+    <div class="outputs" id="outputs"></div>
+
+    <div class="whatif">
+      <h3>¿Y si solo agrego un extra fijo cada mes?</h3>
+      <div class="slider-row">
+        <input type="range" id="extra-slider" min="0" max="3000" step="25" value="500">
+        <span class="amt mono" id="extra-val">$500</span>
+      </div>
+      <div class="result" id="extra-result"></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section aria-labelledby="table-h">
+    <div class="eyebrow">Comparación</div>
+    <h2 id="table-h">Cuatro formas de acelerar el mismo préstamo</h2>
+    <p>Con $100,000 al 6.5% y un pago estándar de $632/mes:</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Estrategia</th><th>Pago mensual</th><th>Tiempo real</th><th>Interés total</th></tr></thead>
+        <tbody>
+          <tr><td>Plan estándar</td><td>$632</td><td>30 años</td><td>$127,544</td></tr>
+          <tr><td>Pagos quincenales (13 pagos/año)</td><td>$632 &times; 13/12 efectivo</td><td>~24 años</td><td>$98,459</td></tr>
+          <tr><td>Estándar + $500 extra/mes</td><td>$1,132</td><td>~10 años</td><td>$36,426</td></tr>
+          <tr><td>Estándar + $1,000 extra/mes</td><td>$1,632</td><td>~6.2 años</td><td>$21,847</td></tr>
+          <tr><td>Meta: pagar en 5 años</td><td>$1,957</td><td>5 años</td><td>$17,397</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="strat-h">
+    <div class="eyebrow">Estrategia</div>
+    <h2 id="strat-h">Cómo ejecutarlo</h2>
+    <div class="strategy-list">
+      <div class="strategy"><div class="num">01</div><div><h3>Pago fijo acelerado</h3><p>Compromete el pago mensual completo calculado arriba desde el primer mes. Es la ruta más predecible: un solo número, sin depender de bonos ni ingresos variables.</p></div></div>
+      <div class="strategy"><div class="num">02</div><div><h3>Pagos quincenales</h3><p>Pagar la mitad del pago estándar cada dos semanas equivale a 13 pagos mensuales al año en vez de 12. Por sí sola lleva un préstamo a 30 años a ~24 años — insuficiente para esta meta, pero es una base sólida para combinar con aportes extra.</p></div></div>
+      <div class="strategy"><div class="num">03</div><div><h3>Aportes extra al capital</h3><p>Bonos, aguinaldo, devoluciones de impuestos, cualquier ingreso no recurrente, aplicado directamente al capital. Especifica siempre "aplicar a capital" — si no, el banco puede registrarlo como adelanto del siguiente pago, que no reduce el interés total.</p></div></div>
+      <div class="strategy"><div class="num">04</div><div><h3>Extra fijo mensual</h3><p>Sumar una cantidad fija sin comprometerte al monto completo. Usa el simulador "¿Y si..." arriba para ver exactamente cuánto tiempo e interés ahorras con cualquier monto.</p></div></div>
+      <div class="strategy"><div class="num">05</div><div><h3>Refinanciar a un plazo corto</h3><p>Refinanciar formalmente a un préstamo a 5 años da la misma cuota como obligación contractual, a veces con mejor tasa. Contras: costos de cierre, y pierdes la flexibilidad de bajar al mínimo en un mes difícil que sí tienes con pagos extra "voluntarios".</p></div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="risk-h">
+    <div class="eyebrow">Antes de empezar</div>
+    <h2 id="risk-h">Verifica esto primero</h2>
+    <div class="callout warn">
+      <h3>Revisa antes de comprometerte</h3>
+      <ul>
+        <li><strong>Penalización por pago anticipado:</strong> algunos préstamos la tienen. Revisa el contrato antes de acelerar pagos.</li>
+        <li><strong>Fondo de emergencia primero:</strong> no destines cada dólar extra al préstamo sin 3-6 meses de gastos guardados aparte — un pago extra ya hecho no se retira fácilmente en una emergencia.</li>
+        <li><strong>"Extra a capital", siempre por escrito:</strong> confirma con el banco que cada pago adicional se aplica a reducir el capital, no como adelanto del próximo pago mensual.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="opp-h">
+    <div class="eyebrow">La otra pregunta</div>
+    <h2 id="opp-h">¿Pagar extra o invertir el extra?</h2>
+    <p>
+      Pagar extra al préstamo es un <strong>retorno garantizado igual a la
+      tasa de interés</strong> — sin riesgo. Invertir ese mismo dinero tiene un
+      retorno esperado potencialmente mayor a largo plazo (~9-10% histórico en
+      acciones), pero no garantizado. Con una tasa de préstamo <strong>alta</strong>
+      (7%+), pagar extra es difícil de superar de forma segura. Con una tasa
+      <strong>baja</strong> (3-4%), invertir el extra suele ganar en
+      expectativa, con más riesgo. A 6.5% es zona intermedia — una mezcla de
+      ambas no es indecisión, es diversificar la incertidumbre.
+    </p>
+  </section>
+
+  <footer>
+    <p>
+      Calculadora con capitalización mensual sobre una tasa fija constante — un
+      préstamo real puede tener tasa variable, seguros, impuestos u otros
+      cargos incluidos en el pago mensual que esta herramienta no modela. No es
+      asesoría financiera personalizada; confirma cualquier estrategia de pago
+      anticipado directamente con tu prestamista.
+    </p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  function resolveColor(varName){
+    var tmp = document.createElement('div');
+    tmp.style.color = varName;
+    document.body.appendChild(tmp);
+    var c = getComputedStyle(tmp).color;
+    document.body.removeChild(tmp);
+    return c;
+  }
+  var seriesDefs = [
+    { key:'standard', name:'Plan estándar', color:'var(--series-1)', colorRaw:null },
+    { key:'accel',    name:'Plan acelerado', color:'var(--series-2)', colorRaw:null },
+  ];
+  seriesDefs.forEach(function(s){ s.colorRaw = resolveColor(s.color); });
+
+  var elPrincipal = document.getElementById('in-principal');
+  var elRate = document.getElementById('in-rate');
+  var elOriginal = document.getElementById('in-original');
+  var elTarget = document.getElementById('in-target');
+  var elExtraSlider = document.getElementById('extra-slider');
+
+  var svg = document.getElementById('chart');
+  var gGrid = document.getElementById('gridlines');
+  var gSeries = document.getElementById('series-group');
+  var gDots = document.getElementById('hover-dots');
+  var crosshair = document.getElementById('crosshair');
+  var hitArea = document.getElementById('hit-area');
+  var tooltip = document.getElementById('tooltip');
+  var tYear = document.getElementById('t-year');
+  var tRows = document.getElementById('t-rows');
+  var outputsEl = document.getElementById('outputs');
+  var legendEl = document.getElementById('legend-row');
+
+  var PAD = { l:70, r:20, t:16, b:34 };
+  var W = 1000, H = 380;
+  var plotW = W - PAD.l - PAD.r;
+  var plotH = H - PAD.t - PAD.b;
+
+  function fmtMoney(v){
+    if (Math.abs(v) >= 1000000) return '$' + (v/1000000).toFixed(2).replace(/\.00$/,'') + 'M';
+    if (Math.abs(v) >= 1000) return '$' + Math.round(v/1000) + 'K';
+    return '$' + Math.round(v);
+  }
+  function fmtMoneyFull(v){ return '$' + Math.round(v).toLocaleString('en-US'); }
+
+  function monthlyPayment(P, annualRate, years){
+    var r = annualRate/12, n = years*12;
+    if (r === 0) return P/n;
+    return P * r * Math.pow(1+r, n) / (Math.pow(1+r, n) - 1);
+  }
+
+  // Returns { balances: [monthly balance incl. month 0], totalInterest, months }
+  function amortize(P, annualRate, payment, maxMonths){
+    var r = annualRate/12;
+    var balance = P;
+    var balances = [P];
+    var totalInterest = 0;
+    var month = 0;
+    while (balance > 0.01 && month < maxMonths){
+      var interest = balance * r;
+      var principalPaid = payment - interest;
+      if (principalPaid <= 0){ // never pays off within cap; flatten
+        balances.push(balance);
+        month++;
+        continue;
+      }
+      if (principalPaid > balance) principalPaid = balance;
+      balance -= principalPaid;
+      totalInterest += interest;
+      month++;
+      balances.push(Math.max(balance,0));
+    }
+    // pad with zeros if paid off before maxMonths
+    while (balances.length <= maxMonths) balances.push(0);
+    return { balances: balances, totalInterest: totalInterest, months: month };
+  }
+
+  function niceMax(v){
+    if (v<=0) return 1000;
+    var mag = Math.pow(10, Math.floor(Math.log10(v)));
+    var norm = v/mag;
+    var step = norm<=1?1:norm<=2?2:norm<=5?5:10;
+    return step*mag;
+  }
+
+  function build(){
+    var P = Math.max(1000, Number(elPrincipal.value)||0);
+    var rate = Math.max(0, Number(elRate.value)||0) / 100;
+    var originalYears = Number(elOriginal.value);
+    var targetYears = Number(elTarget.value);
+    document.getElementById('original-val').textContent = originalYears;
+    document.getElementById('target-val').textContent = targetYears;
+    document.getElementById('lede-principal').textContent = fmtMoneyFull(P);
+    document.getElementById('lede-years').textContent = targetYears;
+
+    var standardPayment = monthlyPayment(P, rate, originalYears);
+    var targetPayment = monthlyPayment(P, rate, targetYears);
+
+    var windowYears = Math.max(targetYears, 1) + 1;
+    var windowMonths = Math.round(windowYears * 12);
+
+    var standardResult = amortize(P, rate, standardPayment, windowMonths);
+    var accelResult = amortize(P, rate, Math.max(targetPayment, standardPayment), windowMonths);
+    var standardFull = amortize(P, rate, standardPayment, Math.round(originalYears*12) + 1);
+    var accelFull = amortize(P, rate, Math.max(targetPayment, standardPayment), Math.round(targetYears*12) + 1);
+
+    var series = [
+      { def: seriesDefs[0], points: standardResult.balances },
+      { def: seriesDefs[1], points: accelResult.balances },
+    ];
+
+    var maxVal = P * 1.05;
+    var yMax = niceMax(maxVal);
+
+    function xForMonth(m){ return PAD.l + (m/windowMonths) * plotW; }
+    function yForVal(v){ return PAD.t + plotH - (v/yMax) * plotH; }
+
+    // gridlines
+    gGrid.innerHTML = '';
+    var steps = 5;
+    for (var i=0;i<=steps;i++){
+      var val = yMax*i/steps;
+      var yy = yForVal(val);
+      var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('class','gridline');
+      line.setAttribute('x1', PAD.l); line.setAttribute('x2', W-PAD.r);
+      line.setAttribute('y1', yy); line.setAttribute('y2', yy);
+      gGrid.appendChild(line);
+      var label = document.createElementNS('http://www.w3.org/2000/svg','text');
+      label.setAttribute('class','axis-label');
+      label.setAttribute('x', PAD.l-10); label.setAttribute('y', yy+4);
+      label.setAttribute('text-anchor','end');
+      label.textContent = fmtMoney(val);
+      gGrid.appendChild(label);
+    }
+    var xTickCount = Math.min(windowYears, 8);
+    for (var t=0;t<=xTickCount;t++){
+      var yr = Math.round(t*windowYears/xTickCount);
+      var xx = xForMonth(yr*12);
+      var xl = document.createElementNS('http://www.w3.org/2000/svg','text');
+      xl.setAttribute('class','axis-label');
+      xl.setAttribute('x', xx); xl.setAttribute('y', H-PAD.b+20);
+      xl.setAttribute('text-anchor','middle');
+      xl.textContent = yr===0 ? 'hoy' : 'año '+yr;
+      gGrid.appendChild(xl);
+    }
+
+    // series paths
+    gSeries.innerHTML = '';
+    series.forEach(function(s){
+      var d = s.points.map(function(v,idx){
+        return (idx===0?'M':'L') + xForMonth(idx).toFixed(2) + ',' + yForVal(v).toFixed(2);
+      }).join(' ');
+      var path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('class','series-path');
+      path.setAttribute('d', d);
+      path.setAttribute('stroke', s.def.colorRaw);
+      gSeries.appendChild(path);
+    });
+
+    // legend
+    legendEl.innerHTML = seriesDefs.map(function(s){
+      return '<div class="legend-item"><span class="swatch" style="background:'+s.color+'"></span>'+s.name+'</div>';
+    }).join('');
+
+    // outputs
+    var effectivePayment = Math.max(targetPayment, standardPayment);
+    var metaNote = targetPayment <= standardPayment ? ' (ya es más lento que tu plan estándar)' : '';
+    outputsEl.innerHTML =
+      '<div class="output"><div class="tag">Pago estándar (' + originalYears + ' a)</div><div class="val">' + fmtMoneyFull(standardPayment) + '/mes</div></div>' +
+      '<div class="output"><div class="tag">Pago para meta (' + targetYears + ' a)' + metaNote + '</div><div class="val accent">' + fmtMoneyFull(effectivePayment) + '/mes</div></div>' +
+      '<div class="output"><div class="tag">Interés total (meta)</div><div class="val">' + fmtMoneyFull(accelFull.totalInterest) + '</div></div>' +
+      '<div class="output"><div class="tag">Interés ahorrado vs. estándar</div><div class="val accent">' + fmtMoneyFull(standardFull.totalInterest - accelFull.totalInterest) + '</div></div>';
+
+    svg.__state = { P:P, rate:rate, windowMonths:windowMonths, series:series, xForMonth:xForMonth, yForVal:yForVal };
+
+    updateWhatIf(P, rate, standardPayment, standardFull.totalInterest);
+  }
+
+  function updateWhatIf(P, rate, standardPayment, standardTotalInterest){
+    var extra = Number(elExtraSlider.value);
+    document.getElementById('extra-val').textContent = fmtMoneyFull(extra);
+    var result = amortize(P, rate, standardPayment + extra, 600);
+    var resultEl = document.getElementById('extra-result');
+    if (extra <= 0){
+      resultEl.innerHTML = 'Sin extra, tu préstamo sigue el plan estándar: <strong>' + fmtMoneyFull(standardTotalInterest) + '</strong> de interés total.';
+    } else if (result.months >= 600){
+      resultEl.innerHTML = 'Ese extra no alcanza a cubrir ni el interés — el saldo nunca bajaría.';
+    } else {
+      resultEl.innerHTML = 'Con ' + fmtMoneyFull(standardPayment) + ' + ' + fmtMoneyFull(extra) + ' extra/mes = <strong>' + fmtMoneyFull(standardPayment+extra) + '/mes</strong>, terminas de pagar en <strong>' + (result.months/12).toFixed(1) + ' años</strong> (' + result.months + ' meses), con <strong>' + fmtMoneyFull(result.totalInterest) + '</strong> de interés total — ahorras <strong>' + fmtMoneyFull(standardTotalInterest - result.totalInterest) + '</strong>.';
+    }
+  }
+
+  // hover interaction
+  var shell = svg.closest('.chart-shell');
+  hitArea.addEventListener('mousemove', function(e){
+    var state = svg.__state;
+    if (!state) return;
+    var rect = svg.getBoundingClientRect();
+    var scaleX = W / rect.width;
+    var mx = (e.clientX - rect.left) * scaleX;
+    var month = Math.round(((mx - PAD.l) / plotW) * state.windowMonths);
+    month = Math.max(0, Math.min(state.windowMonths, month));
+    var xx = state.xForMonth(month);
+
+    crosshair.setAttribute('x1', xx); crosshair.setAttribute('x2', xx);
+    crosshair.setAttribute('y1', PAD.t); crosshair.setAttribute('y2', H-PAD.b);
+    crosshair.style.opacity = 1;
+
+    gDots.innerHTML = '';
+    var rowsHtml = '';
+    state.series.forEach(function(s){
+      var v = s.points[Math.min(month, s.points.length-1)];
+      var yy = state.yForVal(v);
+      var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      dot.setAttribute('cx', xx); dot.setAttribute('cy', yy); dot.setAttribute('r', 5);
+      dot.setAttribute('fill', s.def.colorRaw);
+      dot.setAttribute('stroke', 'var(--chart-surface)');
+      dot.setAttribute('stroke-width', '2');
+      gDots.appendChild(dot);
+      rowsHtml += '<div class="t-row"><span class="sw" style="background:'+s.def.colorRaw+'"></span>'+s.def.name+': '+fmtMoneyFull(v)+'</div>';
+    });
+    tYear.textContent = month===0 ? 'Hoy' : 'Mes ' + month + ' (año ' + (month/12).toFixed(1) + ')';
+    tRows.innerHTML = rowsHtml;
+
+    var rectShell = shell.getBoundingClientRect();
+    var px = ((xx) / W) * rect.width + (rect.left - rectShell.left);
+    tooltip.style.left = px + 'px';
+    tooltip.style.top = ((PAD.t/H)*rect.height + (rect.top-rectShell.top)) + 'px';
+    tooltip.style.opacity = 1;
+  });
+  hitArea.addEventListener('mouseleave', function(){
+    crosshair.style.opacity = 0;
+    gDots.innerHTML = '';
+    tooltip.style.opacity = 0;
+  });
+
+  [elPrincipal, elRate, elOriginal, elTarget].forEach(function(el){
+    el.addEventListener('input', build);
+  });
+  elExtraSlider.addEventListener('input', function(){
+    var P = Math.max(1000, Number(elPrincipal.value)||0);
+    var rate = Math.max(0, Number(elRate.value)||0) / 100;
+    var originalYears = Number(elOriginal.value);
+    var standardPayment = monthlyPayment(P, rate, originalYears);
+    var standardFull = amortize(P, rate, standardPayment, Math.round(originalYears*12) + 1);
+    updateWhatIf(P, rate, standardPayment, standardFull.totalInterest);
+  });
+
+  build();
+})();
+</script>
+</body>
+</html>

@@ -1,37 +1,28 @@
-# Ruta al Millón
+# Finansas
 
-Portafolio y simulador dirigidos a la meta de generar **$1,000,000 USD**, partiendo de:
+Una pequeña aplicación web con tres herramientas financieras interactivas —
+inversión pasiva, trading táctico y pago de deuda — más los scripts de línea
+de comandos detrás de cada una.
 
-- Capital inicial: **$10,000**
-- Aporte mensual: **$500**
-- Horizonte solicitado: **5 años**
+## Aplicación
 
-## Herramienta interactiva
+Todo es HTML/CSS/JS autónomo, sin build ni dependencias de frontend. Para
+verlo, abre `index.html` directamente en el navegador (o sirve la carpeta con
+`python -m http.server` si prefieres navegar por URL).
 
-`index.html` es un simulador autónomo (sin dependencias de build): ajusta capital
-inicial, aporte mensual y horizonte, y compara tres perfiles de riesgo
-(conservador 6%, moderado 9%, agresivo 13% anual) en una gráfica de proyección con
-capitalización mensual. Ábrelo directamente en el navegador.
+| Página | Herramienta |
+|---|---|
+| `index.html` | Inicio — enlaza las tres herramientas |
+| `portafolio.html` | **Ruta al Millón** — simulador de portafolio, tres perfiles de riesgo |
+| `rsi.html` | **Screener RSI Diario** — estrategia de reversión a la media con backtest |
+| `hipoteca.html` | **Cero Deuda en 5** — calculadora de pago acelerado de préstamos |
 
-## Estrategia táctica: screener RSI diario
+Las cuatro páginas comparten diseño, tipografía y navegación.
 
-`rsi_screener.py` complementa el portafolio pasivo con una estrategia activa de
-reversión a la media basada en RSI(14) diario: cada día clasifica un universo de
-activos por señal (compra/vigilar/esperar/venta) y los ranquea según el
-desempeño histórico backtesteado de esa misma regla. Reglas completas,
-gestión de riesgo y limitaciones en [`RSI_STRATEGY.md`](RSI_STRATEGY.md).
+## Ruta al Millón — ¿es realista $1,000,000 en 5 años?
 
-## Deuda: pagar una hipoteca de $100,000 en 5 años
-
-`mortgage_payoff.py` calcula el pago mensual requerido para liquidar un
-préstamo en un plazo objetivo, compara escenarios (quincenal, extra fijo,
-refinanciar) y exporta la tabla de amortización. A diferencia de la meta de
-$1,000,000, esta sí es alcanzable con matemática de préstamo estándar — el
-diagnóstico completo, las cinco estrategias y la pregunta de costo de
-oportunidad (pagar extra vs. invertir) están en
-[`MORTGAGE_STRATEGY.md`](MORTGAGE_STRATEGY.md).
-
-## Diagnóstico: ¿es realista $1,000,000 en 5 años?
+Portafolio dirigido a la meta de generar $1,000,000, partiendo de $10,000 de
+capital inicial y $500 de aporte mensual.
 
 No, con este capital y aporte. En 5 años se habrán aportado $10,000 + $500 × 60 =
 **$40,000**. Convertir eso en $1,000,000 requiere un rendimiento anual sostenido de
@@ -41,7 +32,7 @@ existen en apuestas concentradas de altísimo riesgo (opciones apalancadas, acti
 altamente especulativos), donde el escenario más probable es la pérdida del capital,
 no su multiplicación.
 
-## Resultado realista a 5 años
+**Resultado realista a 5 años**
 
 | Perfil | Rendimiento anual | Valor final | Ganancia |
 |---|---|---|---|
@@ -49,9 +40,7 @@ no su multiplicación.
 | Moderado | 9% | $53,652 | $13,652 |
 | Agresivo | 13% | $61,490 | $21,490 |
 
-## Caminos realistas hacia $1,000,000
-
-Manteniendo el mismo capital inicial ($10,000) y aporte mensual ($500):
+**Caminos realistas hacia $1,000,000** (mismo capital y aporte)
 
 | Camino | Rendimiento | Tiempo | Resultado |
 |---|---|---|---|
@@ -60,42 +49,57 @@ Manteniendo el mismo capital inicial ($10,000) y aporte mensual ($500):
 | Mismo aporte, muy conservador | 6% anual | 39 años | $1,039,958 |
 | Mismo horizonte (5 años), más aporte | 9% anual | 5 años | aporte mensual de **$12,596** |
 
-Los otros dos apalancadores disponibles, sin cambiar el horizonte a 5 años, son
-aumentar el aporte mensual muy por encima de lo actual, o asumir un riesgo
-extremo con alta probabilidad de pérdida total. Ninguno de los dos sustituye una
-estrategia diversificada.
+**Portafolio recomendado por perfil**
 
-## Portafolio recomendado por perfil
+- **Conservador** (~6%): 45% bonos, 35% ETF acciones globales, 15% efectivo, 5% oro
+- **Moderado** (~9%): 55% ETF acciones globales, 25% bonos, 12% small-cap/growth, 8% REITs
+- **Agresivo** (~13%): 55% ETF acciones globales, 25% small-cap/growth, 12% emergentes, 8% especulativo
 
-**Conservador** (~6% anual esperado)
-- 45% Bonos (gobierno/corporativos)
-- 35% ETF de acciones globales (mercado total)
-- 15% Efectivo / fondo del mercado monetario
-- 5% Oro / cobertura
+**Plan de ejecución**: automatiza el aporte mensual, diversifica con ETFs de
+bajo costo, rebalancea una vez al año, sube el aporte cuando suba tu ingreso.
 
-**Moderado** (~9% anual esperado)
-- 55% ETF de acciones globales (mercado total)
-- 25% Bonos
-- 12% Small-cap / growth
-- 8% REITs (bienes raíces)
+## Screener RSI Diario
 
-**Agresivo** (~13% anual esperado, alta volatilidad)
-- 55% ETF de acciones globales (mercado total)
-- 25% Small-cap / growth
-- 12% Mercados emergentes
-- 8% Activos especulativos (cripto, etc.)
+`rsi_screener.py` (y su interfaz en `rsi.html`) implementa una estrategia
+activa de reversión a la media basada en RSI(14) diario: cada día clasifica
+un universo de activos por señal (compra/vigilar/esperar/venta) y los
+ranquea según el desempeño histórico backtesteado de esa misma regla.
 
-## Plan de ejecución
+```bash
+pip install -r requirements.txt
+python rsi_screener.py --tickers SPY QQQ AAPL MSFT --period 2y   # datos reales
+python rsi_screener.py --demo                                    # sin red
+```
 
-1. **Automatiza el aporte mensual** — transferencia automática el día que llega tu ingreso.
-2. **Diversifica con ETFs de bajo costo** — fondos indexados de amplio mercado (<0.2% anual) como base, no acciones individuales ni productos especulativos.
-3. **Rebalancea una vez al año** — vuelve a la asignación objetivo de tu perfil.
-4. **Sube el aporte cuando suba tu ingreso** — destina al menos la mitad de cada aumento salarial al portafolio; es la palanca más rápida para acortar el camino.
+Reglas completas, gestión de riesgo y limitaciones en
+[`RSI_STRATEGY.md`](RSI_STRATEGY.md).
+
+## Cero Deuda en 5 — pagar una hipoteca de $100,000 en 5 años
+
+`mortgage_payoff.py` (y su interfaz en `hipoteca.html`) calcula el pago
+mensual requerido para liquidar un préstamo en un plazo objetivo, compara
+escenarios (quincenal, extra fijo, refinanciar) y exporta la tabla de
+amortización. A diferencia de la meta de $1,000,000, esta sí es alcanzable
+con matemática de préstamo estándar:
+
+| | Pago mensual | Interés total | Plazo |
+|---|---|---|---|
+| Plan estándar (30 años, 6.5%) | $632 | $127,544 | 30 años |
+| Plan a 5 años | $1,957 | $17,397 | 5 años |
+
+```bash
+python mortgage_payoff.py --principal 100000 --rate 6.5 --original-years 30 --target-years 5
+```
+
+Diagnóstico completo, cinco estrategias y la pregunta de costo de oportunidad
+(pagar extra vs. invertir) en [`MORTGAGE_STRATEGY.md`](MORTGAGE_STRATEGY.md).
 
 ## Aviso
 
-Este análisis usa capitalización mensual sobre tasas de retorno anual constantes;
-los mercados reales varían año a año y el rendimiento pasado no garantiza
-resultados futuros. No es asesoría financiera personalizada — antes de invertir,
-considera consultar con un asesor financiero certificado sobre tu situación
-específica.
+Todas las herramientas de este repositorio usan modelos financieros
+simplificados con fines educativos y de planeación — capitalización mensual
+sobre tasas constantes, sin costos de transacción, impuestos ni slippage. Los
+mercados y las tasas reales varían; el rendimiento pasado no garantiza
+resultados futuros. Nada aquí es asesoría financiera personalizada — antes de
+tomar decisiones de inversión, deuda o trading, considera consultar con un
+profesional certificado.
