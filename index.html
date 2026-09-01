@@ -112,8 +112,9 @@
   .hub-links a.active{ background: var(--accent-soft); color: var(--accent); font-weight:600; }
 
   /* ---------- Tool cards ---------- */
-  .tool-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 1.3rem; }
-  @media (max-width: 900px){ .tool-grid{ grid-template-columns: 1fr; } }
+  .tool-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 1.3rem; }
+  @media (max-width: 1080px){ .tool-grid{ grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px){ .tool-grid{ grid-template-columns: 1fr; } }
 
   .tool-card{
     display:flex; flex-direction:column;
@@ -155,6 +156,7 @@
     <a href="index.html" class="active">Inicio</a>
     <a href="portafolio.html">Portafolio</a>
     <a href="rsi.html">RSI Diario</a>
+    <a href="brief.html">Brief Diario</a>
     <a href="hipoteca.html">Hipoteca</a>
   </div>
 </div></nav>
@@ -197,6 +199,15 @@
         <div class="stat">$100,000 al 6.5% &rarr; <strong>$1,957/mes</strong> para 5 años</div>
         <div class="open">Abrir calculadora &rarr;</div>
       </a>
+
+      <a class="tool-card" href="brief.html">
+        <div class="swatch" style="background:var(--accent-soft); color:var(--accent);">☀</div>
+        <div class="kicker">Panorama de mercado</div>
+        <h3>Brief Diario</h3>
+        <p>Resumen matutino: índices y volatilidad, calendario de resultados de la semana, titulares recientes y qué evento macro cae hoy.</p>
+        <div class="stat">Índices, earnings y noticias &rarr; <strong>una lectura de 2 min</strong></div>
+        <div class="open">Abrir brief &rarr;</div>
+      </a>
     </div>
   </section>
 
@@ -213,6 +224,10 @@ python rsi_screener.py --tickers SPY QQQ AAPL MSFT --period 2y</code>
       <div class="cli-row">
         <div class="name">Calculadora de hipoteca (exporta tabla de amortización)</div>
         <code>python mortgage_payoff.py --principal 100000 --rate 6.5 --original-years 30 --target-years 5</code>
+      </div>
+      <div class="cli-row">
+        <div class="name">Brief diario de mercado (índices, resultados, noticias)</div>
+        <code>python market_brief.py --json-out brief.json</code>
       </div>
     </div>
   </section>

@@ -1,8 +1,8 @@
 # Finansas
 
-Una pequeña aplicación web con tres herramientas financieras interactivas —
-inversión pasiva, trading táctico y pago de deuda — más los scripts de línea
-de comandos detrás de cada una.
+Una pequeña aplicación web con cuatro herramientas financieras interactivas —
+inversión pasiva, trading táctico, panorama diario de mercado y pago de
+deuda — más los scripts de línea de comandos detrás de cada una.
 
 ## Aplicación
 
@@ -12,12 +12,13 @@ verlo, abre `index.html` directamente en el navegador (o sirve la carpeta con
 
 | Página | Herramienta |
 |---|---|
-| `index.html` | Inicio — enlaza las tres herramientas |
+| `index.html` | Inicio — enlaza las cuatro herramientas |
 | `portafolio.html` | **Ruta al Millón** — simulador de portafolio, tres perfiles de riesgo |
 | `rsi.html` | **Screener RSI Diario** — estrategia de reversión a la media con backtest |
+| `brief.html` | **Brief Diario** — índices, resultados y noticias que pueden mover el mercado hoy |
 | `hipoteca.html` | **Cero Deuda en 5** — calculadora de pago acelerado de préstamos |
 
-Las cuatro páginas comparten diseño, tipografía y navegación.
+Las cinco páginas comparten diseño, tipografía y navegación.
 
 ## Ruta al Millón — ¿es realista $1,000,000 en 5 años?
 
@@ -73,6 +74,26 @@ python rsi_screener.py --demo                                    # sin red
 
 Reglas completas, gestión de riesgo y limitaciones en
 [`RSI_STRATEGY.md`](RSI_STRATEGY.md).
+
+## Brief Diario — panorama de mercado antes de la apertura
+
+`market_brief.py` (y su interfaz en `brief.html`) reúne cada mañana, en una
+sola lectura de dos minutos, lo que puede mover al mercado hoy: variación de
+índices y volatilidad (VIX), calendario de resultados (earnings) de la
+semana para tu watchlist, titulares recientes por ticker, y qué evento
+macro recurrente (solicitudes de desempleo, reporte de empleo) cae
+específicamente hoy — más una tabla de referencia de cuándo suelen
+publicarse CPI, PCE, FOMC, ventas minoristas e ISM PMI.
+
+```bash
+pip install -r requirements.txt
+python market_brief.py --watchlist AAPL MSFT GOOGL AMZN NVDA META TSLA JPM
+python market_brief.py --demo                                              # sin red
+```
+
+Alcance, fuentes de datos y limitaciones (por qué no incluye un calendario
+económico en vivo con fechas exactas) en
+[`MARKET_BRIEF.md`](MARKET_BRIEF.md).
 
 ## Cero Deuda en 5 — pagar una hipoteca de $100,000 en 5 años
 

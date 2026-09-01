@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brief Diario de Mercado · Finansas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,680&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --bg-page:      #f1f0ea;
+    --bg-surface:   #ffffff;
+    --bg-raised:    #fbfaf6;
+    --ink:          #1b231f;
+    --ink-secondary:#55605a;
+    --ink-muted:    #8b9590;
+    --accent:       #1f6f54;
+    --accent-soft:  #e3eee7;
+    --warn:         #ad5330;
+    --warn-soft:    #f3e1d6;
+    --line:         #dedbd0;
+    --line-strong:  #c7c3b5;
+    --good:         #0ca30c;
+    --critical:     #d03b3b;
+    --neutral-mark: #eda100;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg-page:      #10140f;
+      --bg-surface:   #171e1a;
+      --bg-raised:    #1c2420;
+      --ink:          #ecebe3;
+      --ink-secondary:#aeb6ac;
+      --ink-muted:    #7c857e;
+      --accent:       #4fbe93;
+      --accent-soft:  #16332a;
+      --warn:         #e08a5b;
+      --warn-soft:    #2e2119;
+      --line:         #2a332d;
+      --line-strong:  #3a453d;
+      --good:         #0ca30c;
+      --critical:     #e66767;
+      --neutral-mark: #c98500;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg-page:      #10140f;
+    --bg-surface:   #171e1a;
+    --bg-raised:    #1c2420;
+    --ink:          #ecebe3;
+    --ink-secondary:#aeb6ac;
+    --ink-muted:    #7c857e;
+    --accent:       #4fbe93;
+    --accent-soft:  #16332a;
+    --warn:         #e08a5b;
+    --warn-soft:    #2e2119;
+    --line:         #2a332d;
+    --line-strong:  #3a453d;
+    --good:         #0ca30c;
+    --critical:     #e66767;
+    --neutral-mark: #c98500;
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--bg-page);
+    color: var(--ink);
+    font-family: "Public Sans", -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--accent-soft); color: var(--ink); }
+  a{ color: var(--accent); }
+
+  .wrap{ max-width: 1080px; margin: 0 auto; padding: 4.5rem 1.5rem 6rem; }
+
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--accent); display:flex; align-items:center; gap:0.6rem; margin-bottom: 1.1rem;
+  }
+  .eyebrow::before{ content:""; width:22px; height:1px; background: var(--accent); display:inline-block; }
+
+  h1{
+    font-family:"Fraunces",Georgia,serif; font-optical-sizing:auto; font-weight:600;
+    font-size: clamp(2.1rem, 4.4vw, 3.05rem); line-height:1.08; letter-spacing:-0.01em;
+    margin:0 0 1.1rem; text-wrap: balance;
+  }
+  h2{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size: clamp(1.4rem, 2.4vw, 1.7rem); line-height:1.2; margin:0 0 0.9rem; text-wrap:balance; }
+  h3{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size: 1.1rem; margin:0 0 0.3rem; color: var(--ink); }
+  p{ margin:0 0 1rem; max-width:65ch; color: var(--ink-secondary); }
+  .lede{ font-size:1.13rem; color: var(--ink-secondary); max-width:62ch; }
+
+  section{ margin-top: 3.6rem; }
+  section:first-of-type{ margin-top:0; }
+
+  .meta-row{ font-family:"IBM Plex Mono",monospace; font-size:0.8rem; color: var(--ink-muted); margin-bottom: 2rem; }
+
+  .demo-banner{
+    display:flex; align-items:flex-start; gap: 0.85rem;
+    background: var(--warn-soft);
+    border: 1px solid color-mix(in oklab, var(--warn) 35%, transparent);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 2rem;
+  }
+  .demo-banner .dot{ width: 8px; height: 8px; border-radius: 50%; background: var(--warn); margin-top: 0.5rem; flex-shrink: 0; }
+  .demo-banner strong{ color: var(--ink); }
+  .demo-banner p{ margin: 0.15rem 0 0; font-size: 0.92rem; }
+
+  /* ---------- Index cards ---------- */
+  .idx-grid{ display:grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+  @media (max-width: 900px){ .idx-grid{ grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 560px){ .idx-grid{ grid-template-columns: repeat(2, 1fr); } }
+  .idx-card{ background: var(--bg-surface); border:1px solid var(--line); border-radius: 14px; padding: 1.1rem 1.2rem; }
+  .idx-card .name{ font-family:"IBM Plex Mono",monospace; font-size: 0.72rem; letter-spacing:0.03em; text-transform:uppercase; color: var(--ink-muted); margin-bottom: 0.5rem; }
+  .idx-card .price{ font-family:"IBM Plex Mono",monospace; font-variant-numeric: tabular-nums; font-weight:600; font-size: 1.2rem; color: var(--ink); }
+  .idx-card .chg{ font-family:"IBM Plex Mono",monospace; font-variant-numeric: tabular-nums; font-size: 0.88rem; margin-top: 0.3rem; }
+  .idx-card .chg.up{ color: var(--good); }
+  .idx-card .chg.down{ color: var(--critical); }
+
+  /* ---------- Panels ---------- */
+  .panel{ background: var(--bg-surface); border:1px solid var(--line); border-radius: 14px; padding: 1.6rem 1.8rem; }
+  .macro-today{ display:flex; align-items:flex-start; gap: 0.7rem; }
+  .macro-today .dot{ width:8px; height:8px; border-radius:50%; background: var(--accent); margin-top: 0.5rem; flex-shrink:0; }
+  .macro-today p{ margin:0; font-size: 0.95rem; color: var(--ink); }
+
+  .table-scroll{ overflow-x:auto; border:1px solid var(--line); border-radius: 12px; }
+  table{ border-collapse: collapse; width:100%; min-width: 480px; background: var(--bg-surface); }
+  th, td{ text-align:left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
+  thead th{
+    font-family:"IBM Plex Mono",monospace; font-size:0.7rem; letter-spacing:0.04em;
+    text-transform: uppercase; color: var(--ink-muted); font-weight:600; background: var(--bg-raised);
+  }
+  tbody tr:last-child td{ border-bottom:0; }
+  tbody tr:hover{ background: var(--bg-raised); }
+  td.ticker{ font-weight:700; color: var(--ink); font-family:"IBM Plex Mono",monospace; }
+  td.num{ font-family:"IBM Plex Mono",monospace; font-variant-numeric: tabular-nums; }
+
+  .pill{ display:inline-block; padding: 0.18rem 0.55rem; border-radius: 999px; font-size: 0.74rem; font-family:"IBM Plex Mono",monospace; white-space: nowrap; }
+  .pill.alto{ background: var(--warn-soft); color: var(--warn); }
+  .pill.medio{ background: rgba(237,161,0,0.12); color: var(--neutral-mark); }
+  .pill.muyalto{ background: var(--warn-soft); color: var(--critical); font-weight:600; }
+
+  .headline-list{ display:flex; flex-direction:column; gap: 1rem; }
+  .headline{ display:flex; gap: 0.9rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+  .headline:last-child{ border-bottom:0; padding-bottom:0; }
+  .headline .tag{ font-family:"IBM Plex Mono",monospace; font-size:0.72rem; color: var(--accent); background: var(--accent-soft); border-radius: 6px; padding: 0.15rem 0.5rem; height: fit-content; flex-shrink:0; }
+  .headline .body p{ margin:0; font-size: 0.95rem; color: var(--ink); }
+  .headline .body .src{ font-size: 0.78rem; color: var(--ink-muted); margin-top: 0.2rem; }
+
+  /* ---------- CLI section ---------- */
+  .cli-panel{ background: var(--bg-surface); border:1px solid var(--line); border-radius: 14px; padding: 1.8rem 2rem; }
+  .cli-panel code{
+    display:block; font-family:"IBM Plex Mono",monospace; font-size: 0.82rem; color: var(--ink);
+    background: var(--bg-raised); border:1px solid var(--line-strong); border-radius: 7px; padding: 0.6rem 0.9rem;
+    overflow-x: auto; white-space: pre; margin-bottom: 0.9rem;
+  }
+  .cli-panel code:last-child{ margin-bottom:0; }
+
+  .steps{ display:flex; flex-direction:column; border-top:1px solid var(--line); }
+  .step{ display:grid; grid-template-columns: 2.4rem 1fr; gap:1rem; padding: 1.2rem 0; border-bottom:1px solid var(--line); }
+  .step .num{ font-family:"Fraunces",serif; font-weight:500; font-size:1.3rem; color: var(--accent); }
+  .step p{ margin:0; }
+
+  footer{ margin-top:5rem; padding-top:1.8rem; border-top:1px solid var(--line); }
+  footer p{ font-size:0.82rem; color: var(--ink-muted); max-width:72ch; }
+
+  code{ font-family:"IBM Plex Mono",monospace; background: var(--bg-raised); border:1px solid var(--line); border-radius:5px; padding:0.1rem 0.4rem; font-size:0.86em; }
+
+  /* ---------- Hub nav ---------- */
+  .hub-nav{ background: var(--bg-surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 40; }
+  .hub-nav-inner{ max-width: 1080px; margin: 0 auto; padding: 0.85rem 1.5rem; display:flex; align-items:center; justify-content:space-between; gap: 1rem; flex-wrap: wrap; }
+  .hub-brand{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size: 1.02rem; color: var(--ink); text-decoration:none; display:flex; align-items:center; gap:0.5rem; }
+  .hub-brand::before{ content:"\25C6"; color: var(--accent); font-size:0.75rem; }
+  .hub-links{ display:flex; gap: 0.3rem; flex-wrap: wrap; }
+  .hub-links a{ font-family:"IBM Plex Mono",monospace; font-size: 0.8rem; padding: 0.45rem 0.8rem; border-radius: 7px; color: var(--ink-secondary); text-decoration:none; }
+  .hub-links a:hover{ background: var(--bg-raised); color: var(--ink); }
+  .hub-links a.active{ background: var(--accent-soft); color: var(--accent); font-weight:600; }
+</style>
+</head>
+<body>
+<nav class="hub-nav"><div class="hub-nav-inner">
+  <a href="index.html" class="hub-brand">Finansas</a>
+  <div class="hub-links"><a href="index.html">Inicio</a><a href="portafolio.html">Portafolio</a><a href="rsi.html">RSI Diario</a><a href="brief.html" class="active">Brief Diario</a><a href="hipoteca.html">Hipoteca</a></div>
+</div></nav>
+
+<div class="wrap">
+  <div class="eyebrow">Panorama de mercado &middot; Uso diario</div>
+  <h1>Brief diario de mercado</h1>
+  <p class="lede">
+    Antes de la apertura: variación de índices y volatilidad, calendario de
+    resultados de la semana, titulares recientes y qué eventos macro
+    recurrentes caen hoy &mdash; todo en una sola lectura de dos minutos.
+  </p>
+
+  <div class="demo-banner">
+    <span class="dot"></span>
+    <div>
+      <strong>Datos sintéticos de demostración.</strong>
+      <p>
+        Este entorno no tiene acceso a datos de mercado ni noticias en vivo.
+        Los precios, resultados y titulares de esta página fueron generados
+        con <code>market_brief.py --demo</code> para mostrar el flujo
+        completo de la herramienta — no son cotizaciones ni noticias reales.
+        Ejecuta el script con acceso a internet para obtener el brief real
+        de hoy.
+      </p>
+    </div>
+  </div>
+
+  <div class="meta-row" id="generated-at"></div>
+
+  <section aria-labelledby="idx-h">
+    <div class="eyebrow">Apertura</div>
+    <h2 id="idx-h">Índices y volatilidad</h2>
+    <div class="idx-grid" id="idx-grid"></div>
+  </section>
+
+  <section aria-labelledby="macro-h">
+    <div class="eyebrow">Hoy</div>
+    <h2 id="macro-h">Eventos macro de hoy</h2>
+    <div class="panel" id="macro-today"></div>
+  </section>
+
+  <section aria-labelledby="earnings-h">
+    <div class="eyebrow">Calendario</div>
+    <h2 id="earnings-h">Resultados (earnings) próximos</h2>
+    <p>Watchlist consultada en la ventana de días configurada en el script.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Fecha</th><th>Ticker</th></tr></thead>
+        <tbody id="earnings-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="news-h">
+    <div class="eyebrow">Titulares</div>
+    <h2 id="news-h">Últimas noticias relevantes</h2>
+    <div class="panel">
+      <div class="headline-list" id="headline-list"></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="ref-h">
+    <div class="eyebrow">Referencia</div>
+    <h2 id="ref-h">Calendario macro recurrente</h2>
+    <p>Frecuencia y horario típico de las publicaciones que más mueven al mercado — no son fechas exactas descargadas, confirma la fecha puntual en la fuente oficial de cada evento antes de operar con esa información.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Evento</th><th>Cuándo</th><th>Fuente</th><th>Impacto</th></tr></thead>
+        <tbody id="ref-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="cli-h">
+    <div class="eyebrow">Para uso avanzado</div>
+    <h2 id="cli-h">Generar el brief desde la terminal</h2>
+    <div class="cli-panel">
+      <code>pip install -r requirements.txt
+python market_brief.py --demo                    # sin red, datos de ejemplo
+python market_brief.py                            # datos reales (índices, resultados, noticias)
+python market_brief.py --json-out brief.json      # guarda también el JSON</code>
+    </div>
+  </section>
+
+  <section aria-labelledby="plan-h">
+    <div class="eyebrow">Rutina sugerida</div>
+    <h2 id="plan-h">Cómo usarlo cada mañana</h2>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><div><h3>Corre el script antes de la apertura</h3><p><code>python market_brief.py</code> con tu propia lista de índices y watchlist.</p></div></div>
+      <div class="step"><div class="num">02</div><div><h3>Revisa si hoy hay un evento macro de alto impacto</h3><p>CPI, PCE, FOMC o el reporte de empleo suelen mover al mercado entero, no solo a un sector.</p></div></div>
+      <div class="step"><div class="num">03</div><div><h3>Cruza el calendario de resultados con tus posiciones</h3><p>Un earnings en un ticker que tienes abierto es motivo para reducir tamaño o ajustar el stop antes del reporte.</p></div></div>
+      <div class="step"><div class="num">04</div><div><h3>Lee los titulares con escepticismo</h3><p>Son un punto de partida para investigar, no una señal de compra/venta por sí solos.</p></div></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      Este brief automatiza la recolección de información pública (precios,
+      calendario de resultados, titulares) — no analiza sentimiento, no
+      pondera relevancia más allá del orden de publicación, y la sección de
+      calendario macro es una referencia de frecuencia típica, no un
+      calendario económico en vivo. No es asesoría financiera personalizada
+      — antes de tomar decisiones de inversión o trading, considera
+      consultar con un profesional certificado.
+    </p>
+  </footer>
+</div>
+
+<script id="brief-data" type="application/json">{"generated_at":"2026-09-01T21:20:31","mode":"demo","indices":[{"ticker":"SPY","name":"S&P 500 (SPY)","price":571.32,"change_pct":0.42},{"ticker":"QQQ","name":"Nasdaq 100 (QQQ)","price":489.71,"change_pct":0.68},{"ticker":"DIA","name":"Dow Jones (DIA)","price":398.05,"change_pct":-0.15},{"ticker":"IWM","name":"Russell 2000 (IWM)","price":211.44,"change_pct":1.1},{"ticker":"^VIX","name":"Volatilidad (VIX)","price":14.82,"change_pct":-3.2}],"earnings":[{"ticker":"NVDA","date":"2026-09-02"},{"ticker":"JPM","date":"2026-09-03"},{"ticker":"TSLA","date":"2026-09-05"},{"ticker":"META","date":"2026-09-07"}],"headlines":[{"ticker":"SPY","title":"La Fed mantiene sin cambios el tono sobre próximos recortes de tasas","publisher":"Reuters (demo)","link":""},{"ticker":"NVDA","title":"Demanda de chips de IA sigue superando expectativas del mercado","publisher":"Bloomberg (demo)","link":""},{"ticker":"AAPL","title":"Ventas de la nueva línea de productos superan estimados de analistas","publisher":"CNBC (demo)","link":""}],"macro_today":["Sin eventos macro recurrentes deterministas para hoy. Revisa el calendario de referencia y las fuentes oficiales para publicaciones puntuales (CPI, PCE, FOMC, etc.)."],"macro_reference":[{"evento":"Solicitudes iniciales de desempleo","cuando":"Todos los jueves, ~8:30am ET","fuente":"Dept. of Labor","impacto":"Medio"},{"evento":"Reporte de empleo (Nonfarm Payrolls)","cuando":"Primer viernes del mes (típico), ~8:30am ET","fuente":"BLS","impacto":"Alto"},{"evento":"Inflación al consumidor (CPI)","cuando":"Entre el día 10 y 15 del mes (varía)","fuente":"BLS","impacto":"Alto"},{"evento":"Inflación PCE (indicador preferido de la Fed)","cuando":"Última semana del mes (varía)","fuente":"BEA","impacto":"Alto"},{"evento":"Decisión de tasas (FOMC)","cuando":"8 reuniones al año, ~cada 6 semanas, miércoles","fuente":"Federal Reserve","impacto":"Muy alto"},{"evento":"Ventas minoristas (Retail Sales)","cuando":"A mediados de mes (varía)","fuente":"Census Bureau","impacto":"Medio"},{"evento":"ISM Manufacturing / Services PMI","cuando":"Primeros días hábiles del mes","fuente":"ISM","impacto":"Medio"}]}</script>
+<script>
+(function(){
+  var DATA = JSON.parse(document.getElementById('brief-data').textContent);
+
+  document.getElementById('generated-at').textContent =
+    'Generado ' + DATA.generated_at.replace('T', ' ') + ' · modo: ' + DATA.mode;
+
+  var idxGrid = document.getElementById('idx-grid');
+  idxGrid.innerHTML = DATA.indices.map(function(row){
+    var up = row.change_pct >= 0;
+    var sign = up ? '+' : '';
+    return '<div class="idx-card">' +
+      '<div class="name">' + row.name + '</div>' +
+      '<div class="price">' + row.price.toFixed(2) + '</div>' +
+      '<div class="chg ' + (up ? 'up' : 'down') + '">' + sign + row.change_pct.toFixed(2) + '%</div>' +
+    '</div>';
+  }).join('');
+
+  var macroToday = document.getElementById('macro-today');
+  macroToday.innerHTML = DATA.macro_today.map(function(item){
+    return '<div class="macro-today"><span class="dot"></span><p>' + item + '</p></div>';
+  }).join('');
+
+  var earningsBody = document.getElementById('earnings-body');
+  if (DATA.earnings.length){
+    earningsBody.innerHTML = DATA.earnings.map(function(row){
+      return '<tr><td class="num">' + row.date + '</td><td class="ticker">' + row.ticker + '</td></tr>';
+    }).join('');
+  } else {
+    earningsBody.innerHTML = '<tr><td colspan="2">Ninguno en la ventana consultada para el watchlist actual.</td></tr>';
+  }
+
+  var headlineList = document.getElementById('headline-list');
+  if (DATA.headlines.length){
+    headlineList.innerHTML = DATA.headlines.map(function(h){
+      var src = h.publisher ? '<div class="src">' + h.publisher + '</div>' : '';
+      return '<div class="headline"><span class="tag">' + h.ticker + '</span><div class="body"><p>' + h.title + '</p>' + src + '</div></div>';
+    }).join('');
+  } else {
+    headlineList.innerHTML = '<p>Sin titulares disponibles.</p>';
+  }
+
+  var refBody = document.getElementById('ref-body');
+  function impactoClass(imp){
+    if (imp === 'Muy alto') return 'muyalto';
+    if (imp === 'Alto') return 'alto';
+    return 'medio';
+  }
+  refBody.innerHTML = DATA.macro_reference.map(function(m){
+    return '<tr><td>' + m.evento + '</td><td>' + m.cuando + '</td><td>' + m.fuente + '</td>' +
+      '<td><span class="pill ' + impactoClass(m.impacto) + '">' + m.impacto + '</span></td></tr>';
+  }).join('');
+})();
+</script>
+</body>
+</html>
